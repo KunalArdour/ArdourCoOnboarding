@@ -421,7 +421,7 @@ input:focus, textarea:focus, select:focus {
     .hero-title { font-size: 2.8rem; }
     .hero-subtitle { font-size: 1.2rem; }
     .accent-text { font-size: 1.8rem; }
-    .portfolio-container-main { height: 500px; }
+    .portfolio-container-main { height: 600px; overflow: visible !important; }
 }
 
 /* =========================================

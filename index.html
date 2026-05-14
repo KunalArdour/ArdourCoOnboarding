@@ -38,9 +38,9 @@
                     <!-- This iframe will be used on Desktop -->
                     <iframe id="pdf-iframe" src="The Ardour & Co. Portfolio.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" width="100%" height="100%" style="border: none; overflow: hidden;" scrolling="no"></iframe>
                     
-                    <!-- This canvas will be used on Mobile for PDF.js rendering -->
-                    <div id="pdf-mobile-viewer" style="display: none; width: 100%; height: 100%; overflow-y: auto; background: white;">
-                        <canvas id="pdf-canvas" style="width: 100%; height: auto; display: block;"></canvas>
+                    <!-- This container will hold canvases for each page on Mobile -->
+                    <div id="pdf-mobile-viewer" style="display: none; width: 100%; height: 100%; overflow-y: auto; background: white; -webkit-overflow-scrolling: touch;">
+                        <div id="pdf-pages-container"></div>
                         <div id="pdf-loader" style="padding: 2rem; text-align: center; font-family: 'EB Garamond', serif;">Loading Portfolio...</div>
                     </div>
                 </div>
@@ -84,8 +84,7 @@
 
                 const iframe = document.getElementById('pdf-iframe');
                 const mobileViewer = document.getElementById('pdf-mobile-viewer');
-                const canvas = document.getElementById('pdf-canvas');
-                const ctx = canvas.getContext('2d');
+                const pagesContainer = document.getElementById('pdf-pages-container');
                 const loader = document.getElementById('pdf-loader');
 
                 // Toggle visibility
@@ -94,22 +93,46 @@
 
                 // Load PDF
                 pdfjsLib.getDocument(url).promise.then(pdf => {
-                    // We render the first page for the preview
-                    pdf.getPage(1).then(page => {
-                        const viewport = page.getViewport({ scale: 2 }); // High scale for crispness
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
+                    loader.innerText = 'Loading ' + pdf.numPages + ' pages...';
+                    
+                    let pagesRendered = 0;
 
-                        const renderContext = {
-                            canvasContext: ctx,
-                            viewport: viewport
-                        };
+                    // Function to render a page
+                    const renderPage = (pageNum) => {
+                        return pdf.getPage(pageNum).then(page => {
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            const viewport = page.getViewport({ scale: 1.5 });
 
-                        page.render(renderContext).promise.then(() => {
-                            loader.style.display = 'none';
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            canvas.style.width = '100%';
+                            canvas.style.height = 'auto';
+                            canvas.style.display = 'block';
+                            canvas.style.marginBottom = '10px';
+                            pagesContainer.appendChild(canvas);
+
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+
+                            return page.render(renderContext).promise.then(() => {
+                                pagesRendered++;
+                                if (pagesRendered === pdf.numPages) {
+                                    loader.style.display = 'none';
+                                }
+                            });
                         });
-                    });
-                }).catch(err => {
+                    };
+
+                    // Render all pages sequentially for better stability
+                    let sequence = Promise.resolve();
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        sequence = sequence.then(() => renderPage(i));
+                    }
+                })
+.catch(err => {
                     console.error('PDF.js Error:', err);
                     loader.innerHTML = 'View Portfolio: <br><br> <a href="' + url + '" target="_blank" class="btn-primary" style="display:inline-block; text-decoration:none;">Open PDF</a>';
                 });
