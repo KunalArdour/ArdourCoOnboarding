@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ardour & Co. | Onboarding</title>
+    <meta name="description" content="Premium onboarding for our marketing and advertising partners.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header style="padding: 3rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: relative; z-index: 1000; background: transparent;">
+        <img src="logo.png" alt="The Ardour & Co." style="height: 80px;">
+        <span style="font-family: 'Aboreto', cursive; font-size: 1.8rem; color: var(--text-main); font-weight: bold; letter-spacing: 0.3em;">THE ARDOUR & CO.</span>
+    </header>
+
+    <div class="app-container">
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <h1 class="hero-title">WE BUILD BRANDS THAT <span class="shake">SHAKE THINGS UP.</span></h1>
+            <p class="hero-subtitle">Premium creative growth agency helping modern brands communicate better, look sharper, and scale faster.</p>
+            <div style="margin-top: 3rem;">
+                <button class="btn-primary" onclick="window.location.href='sla-onboarding.html'" style="font-size: 1.2rem; padding: 1.2rem 3rem;">Start Your Onboarding →</button>
+            </div>
+        </section>
+
+        <!-- STEP 1: PORTFOLIO & CONTACT -->
+        <section id="step-1" class="step-section active">
+                <!-- PORTFOLIO SECTION -->
+                <div class="checkered-header">
+                    <h2>Our Creative Portfolio</h2>
+                </div>
+                
+                <!-- Embedded PDF Portfolio (Clean View) -->
+                <div class="portfolio-container-main">
+                    <iframe src="The Ardour & Co. Portfolio.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" width="100%" height="100%" style="border: none; overflow: hidden;" scrolling="no"></iframe>
+                </div>
+
+                <!-- CONTACT & ADDRESS FOOTER -->
+                <div class="contact-footer-main">
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <h4>Email Us</h4>
+                            <p>shivani@theardourco.com</p>
+                        </div>
+                        <div class="contact-card">
+                            <h4>Call Us</h4>
+                            <p>+91 88489 26997</p>
+                        </div>
+                        <div class="contact-card">
+                            <h4>Our Studio</h4>
+                            <p>Pune Sihagad</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 4rem; text-align: center;">
+                        <p style="font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--accent-pink);">Let's shake things up together.</p>
+                        <p style="margin-top: 1rem; opacity: 0.5; font-size: 0.8rem;">© 2024 The Ardour & Co. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- script.js is kept for the background effects or any top-level logic if needed -->
+    <script src="script.js"></script>
+</body>
+</html>

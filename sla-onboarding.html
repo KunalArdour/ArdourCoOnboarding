@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLA Onboarding Portal | The Ardour & Co.</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dashboard-body">
+    
+    <!-- Top Navigation -->
+    <nav class="dashboard-nav">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <img src="logo.png" alt="The Ardour & Co." class="dash-logo">
+            <span style="font-family: 'Aboreto', cursive; font-size: 1.5rem; color: var(--text-main); font-weight: bold;">THE ARDOUR & CO.</span>
+        </div>
+        <div class="dash-nav-actions">
+            <span class="save-status" id="save-status">Auto-saved just now</span>
+            <button class="btn-secondary btn-small" onclick="saveDraft()">Save & Continue Later</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Progress -->
+        <aside class="dashboard-sidebar">
+            <div class="progress-widget">
+                <h3>Completion Progress</h3>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="progress-text">0% Complete</span>
+                    <span style="color: var(--text-dim); font-size: 0.9rem;">Est. 8 mins</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-nav" id="sidebar-nav">
+                <li class="nav-item active" data-step="1">1. Client Details</li>
+                <li class="nav-item" data-step="2">2. Project Details</li>
+                <li class="nav-item" data-step="3">3. Social Media</li>
+                <li class="nav-item" data-step="4">4. Branding</li>
+                <li class="nav-item" data-step="5">5. Website</li>
+                <li class="nav-item" data-step="6">6. Content & Assets</li>
+                <li class="nav-item" data-step="7">7. Timelines & Budget</li>
+                <li class="nav-item" data-step="8">8. Communication</li>
+                <li class="nav-item" data-step="9">9. Terms & Consent</li>
+                <li class="nav-item review-step" data-step="10">Review & Submit</li>
+            </ul>
+        </aside>
+
+        <!-- Main Form Area -->
+        <main class="dashboard-main">
+            <form id="sla-form" onsubmit="event.preventDefault();">
+                
+                <!-- SECTION 1: CLIENT DETAILS -->
+                <section class="form-section active" id="section-1">
+                    <div class="section-header">
+                        <h2>Client Details</h2>
+                        <p>Let's start with the basics to set up your account profile.</p>
+                    </div>
+                    
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Client Full Name</label>
+                            <input type="text" name="client_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" name="company_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Brand Name</label>
+                            <input type="text" name="brand_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Website URL</label>
+                            <input type="url" name="website">
+                        </div>
+                        <div class="form-group">
+                            <label>Instagram Handle</label>
+                            <input type="text" name="instagram">
+                        </div>
+                        <div class="form-group">
+                            <label>Industry Type</label>
+                            <select name="industry">
+                                <option value="">Select Industry</option>
+                                <option>Fashion</option>
+                                <option>Real Estate</option>
+                                <option>Healthcare</option>
+                                <option>Food & Beverage</option>
+                                <option>Fitness</option>
+                                <option>Personal Brand</option>
+                                <option>E-commerce</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Company Size</label>
+                            <select name="company_size">
+                                <option value="">Select Size</option>
+                                <option>Solo</option>
+                                <option>2–10 Employees</option>
+                                <option>10–50 Employees</option>
+                                <option>50+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>GST Number</label>
+                            <input type="text" name="gst">
+                        </div>
+                        <div class="form-group">
+                            <label>PAN Number</label>
+                            <input type="text" name="pan">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Address</label>
+                        <textarea name="address" rows="3" required></textarea>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: PROJECT DETAILS -->
+                <section class="form-section" id="section-2">
+                    <div class="section-header">
+                        <h2>Project Details</h2>
+                        <p>What are we building together?</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What services are you looking for?</label>
+                        <div class="service-tags">
+                            <!-- Multi-select tags -->
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Branding"><span>Branding</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Social Media Management"><span>Social Media Management</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Content Creation"><span>Content Creation</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Ads Management"><span>Ads Management</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Website Design"><span>Website Design</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Website Management"><span>Website Management</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="SEO"><span>SEO</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="ORM"><span>ORM</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Influencer Marketing"><span>Influencer Marketing</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Photography"><span>Photography</span></label>
+                            <label class="service-tag"><input type="checkbox" name="req_services" value="Videography"><span>Videography</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preferred Tone of Brand</label>
+                        <div class="service-tags">
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Luxury"><span>Luxury</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Minimal"><span>Minimal</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Fun"><span>Fun</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Bold"><span>Bold</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Corporate"><span>Corporate</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Premium"><span>Premium</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Gen Z"><span>Gen Z</span></label>
+                            <label class="service-tag"><input type="checkbox" name="tone" value="Modern"><span>Modern</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brand Description</label>
+                        <textarea name="brand_desc" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Audience</label>
+                        <textarea name="target_audience" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Competitor Brands</label>
+                        <textarea name="competitors" rows="2"></textarea>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Current Challenges</label>
+                            <textarea name="challenges" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Goals from this project</label>
+                            <textarea name="goals" rows="3"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 3: SOCIAL MEDIA -->
+                <section class="form-section" id="section-3">
+                    <div class="section-header">
+                        <h2>Social Media Requirements</h2>
+                        <p>Configure your digital presence.</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Platforms Needed</label>
+                        <div class="service-tags">
+                            <label class="service-tag"><input type="checkbox" name="platforms" value="Instagram"><span>Instagram</span></label>
+                            <label class="service-tag"><input type="checkbox" name="platforms" value="Facebook"><span>Facebook</span></label>
+                            <label class="service-tag"><input type="checkbox" name="platforms" value="LinkedIn"><span>LinkedIn</span></label>
+                            <label class="service-tag"><input type="checkbox" name="platforms" value="YouTube"><span>YouTube</span></label>
+                            <label class="service-tag"><input type="checkbox" name="platforms" value="Twitter/X"><span>Twitter/X</span></label>
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Number of Posts Required Monthly</label>
+                            <input type="number" name="monthly_posts" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Stories Required</label>
+                            <input type="number" name="monthly_stories" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Reels Required</label>
+                            <input type="number" name="monthly_reels" min="0">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group toggle-group">
+                            <label>Ad Creatives Required?</label>
+                            <select name="ads_required"><option>No</option><option>Yes</option></select>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>ORM Required?</label>
+                            <select name="orm_required"><option>No</option><option>Yes</option></select>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Reports Required?</label>
+                            <select name="reports_required"><option>Yes</option><option>No</option></select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 4: BRANDING -->
+                <section class="form-section" id="section-4">
+                    <div class="section-header">
+                        <h2>Branding Requirements</h2>
+                        <p>Define your visual identity needs.</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Branding Deliverables</label>
+                        <div class="service-tags">
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Logo Design"><span>Logo Design</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Brand Guidelines"><span>Brand Guidelines</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Typography System"><span>Typography System</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Color Palette"><span>Color Palette</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Packaging Design"><span>Packaging Design</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Moodboards"><span>Moodboards</span></label>
+                            <label class="service-tag"><input type="checkbox" name="branding_req" value="Visual Identity"><span>Visual Identity</span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Describe your brand vision</label>
+                        <textarea name="brand_vision" rows="4"></textarea>
+                    </div>
+                </section>
+
+                <!-- SECTION 5: WEBSITE -->
+                <section class="form-section" id="section-5">
+                    <div class="section-header">
+                        <h2>Website Requirements</h2>
+                        <p>Building your digital home.</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Do you need a website?</label>
+                        <select name="need_website" id="need-website-select" onchange="toggleWebsiteFields()">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div id="website-fields" style="display: none;">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Website Type</label>
+                                <select name="website_type">
+                                    <option>Landing Page</option>
+                                    <option>Portfolio Website</option>
+                                    <option>E-commerce</option>
+                                    <option>SaaS</option>
+                                    <option>Corporate</option>
+                                    <option>Personal Brand</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Estimated Number of Pages</label>
+                                <input type="number" name="website_pages" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Do you already own a domain?</label>
+                                <select name="has_domain"><option>No</option><option>Yes</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Do you need hosting support?</label>
+                                <select name="need_hosting"><option>Yes</option><option>No</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reference Websites (URLs)</label>
+                            <textarea name="website_refs" rows="2" placeholder="e.g., apple.com, stripe.com"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 6: CONTENT & ASSETS -->
+                <section class="form-section" id="section-6">
+                    <div class="section-header">
+                        <h2>Content & Assets</h2>
+                        <p>Upload your existing brand assets securely.</p>
+                    </div>
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">📁</div>
+                        <h3>Drag & drop files here</h3>
+                        <p>or click to browse</p>
+                        <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem;">Accepts Logos, Brand Guidelines, Product Photos, Videos</p>
+                        <input type="file" id="file-input" multiple hidden>
+                    </div>
+                    <div id="file-preview-container" class="file-preview-grid"></div>
+                </section>
+
+                <!-- SECTION 7: TIMELINES & BUDGET -->
+                <section class="form-section" id="section-7">
+                    <div class="section-header">
+                        <h2>Timelines & Budget</h2>
+                        <p>Aligning expectations and resources.</p>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Expected Project Start Date</label>
+                            <input type="date" name="start_date">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Delivery Timeline</label>
+                            <input type="text" name="delivery_timeline" placeholder="e.g., 4 Weeks">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Budget (if retainer)</label>
+                            <input type="text" name="monthly_budget" placeholder="$ / ₹">
+                        </div>
+                        <div class="form-group">
+                            <label>One-time Budget (if project)</label>
+                            <input type="text" name="onetime_budget" placeholder="$ / ₹">
+                        </div>
+                        <div class="form-group">
+                            <label>Urgency Level</label>
+                            <select name="urgency">
+                                <option>Normal</option>
+                                <option>Priority</option>
+                                <option style="color: red; font-weight: bold;">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 8: COMMUNICATION -->
+                <section class="form-section" id="section-8">
+                    <div class="section-header">
+                        <h2>Communication & Approvals</h2>
+                        <p>How we stay in sync.</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Communication Channel</label>
+                        <div class="service-tags">
+                            <label class="service-tag"><input type="radio" name="comm_channel" value="WhatsApp"><span>WhatsApp</span></label>
+                            <label class="service-tag"><input type="radio" name="comm_channel" value="Email"><span>Email</span></label>
+                            <label class="service-tag"><input type="radio" name="comm_channel" value="Slack"><span>Slack</span></label>
+                            <label class="service-tag"><input type="radio" name="comm_channel" value="Discord"><span>Discord</span></label>
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Primary Point of Contact (Name & Email)</label>
+                            <input type="text" name="poc">
+                        </div>
+                        <div class="form-group">
+                            <label>Approval Authority Name</label>
+                            <input type="text" name="approval_auth">
+                        </div>
+                        <div class="form-group">
+                            <label>Standard Feedback Turnaround Time</label>
+                            <select name="feedback_tat">
+                                <option>24 Hours</option>
+                                <option>48 Hours</option>
+                                <option>72+ Hours</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 9: TERMS & CONSENT -->
+                <section class="form-section" id="section-9">
+                    <div class="section-header">
+                        <h2>Terms & Consent</h2>
+                        <p>Finalize your submission to generate the SLA.</p>
+                    </div>
+                    <div class="consent-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I confirm that all information provided is accurate.
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I understand timelines may shift due to delayed approvals.
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I agree to the agency communication process.
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <label>Authorized Signature</label>
+                        <canvas id="dashboard-signature" height="150" style="width: 100%; display: block;"></canvas>
+                        <button type="button" class="btn-clear-sig" onclick="clearDashboardSignature()">Clear Drawn Signature</button>
+                        
+                        <div style="margin-top: 1rem; margin-bottom: 1rem; font-weight: bold; color: var(--text-dim); text-align: center;">— OR —</div>
+                        
+                        <label>Upload Signature Image</label>
+                        <input type="file" id="signature-upload" accept="image/png, image/jpeg, image/webp" style="padding: 0.5rem; background: transparent; border: 1px dashed var(--border-color);">
+                    </div>
+                </section>
+
+                <!-- REVIEW SECTION -->
+                <section class="form-section" id="section-10">
+                    <div class="section-header">
+                        <h2>Review & Submit</h2>
+                        <p>Please review your details before generating the SLA.</p>
+                    </div>
+                    <div id="review-container" class="review-box">
+                        <!-- JS will populate review data here -->
+                    </div>
+                    
+                    <!-- HIDDEN ADMIN FIELDS -->
+                    <div style="display: none;">
+                        <input type="hidden" name="admin_notes">
+                        <input type="hidden" name="assigned_am">
+                        <input type="hidden" name="sla_version" value="1.0">
+                        <input type="hidden" name="final_pricing">
+                        <input type="hidden" name="discount">
+                        <input type="hidden" name="revision_limits" value="2">
+                        <input type="hidden" name="support_hours" value="10am-6pm">
+                        <input type="hidden" name="notice_period" value="30 Days">
+                        <input type="hidden" name="invoice_status" value="Pending">
+                        <input type="hidden" name="contract_status" value="Draft">
+                    </div>
+                </section>
+
+                <!-- SUCCESS SCREEN -->
+                <section class="form-section" id="success-screen" style="text-align: center; padding: 4rem 2rem;">
+                    <div class="success-icon" style="font-size: 4rem; margin-bottom: 1rem;">✨</div>
+                    <h2 style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-pink);">SLA Initiated</h2>
+                    <p style="font-size: 1.2rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 2rem auto;">Your onboarding details have been processed securely. We are generating your custom Service Level Agreement based on these parameters and will be in touch shortly.</p>
+                    
+                    <div style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border-color);">
+                        <h3 style="font-family: 'Aboreto', cursive; font-size: 1.8rem; margin-bottom: 1rem;">How was your experience?</h3>
+                        <p style="color: var(--text-dim); margin-bottom: 1.5rem;">We'd love your feedback on this onboarding portal.</p>
+                        <div style="display: flex; justify-content: center; gap: 1rem; font-size: 2.5rem; margin-bottom: 2rem;">
+                            <span style="cursor: pointer; transition: 0.2s;" onclick="setRating(1)" id="star-1">⭐</span>
+                            <span style="cursor: pointer; transition: 0.2s;" onclick="setRating(2)" id="star-2">⭐</span>
+                            <span style="cursor: pointer; transition: 0.2s;" onclick="setRating(3)" id="star-3">⭐</span>
+                            <span style="cursor: pointer; transition: 0.2s;" onclick="setRating(4)" id="star-4">⭐</span>
+                            <span style="cursor: pointer; transition: 0.2s;" onclick="setRating(5)" id="star-5">⭐</span>
+                        </div>
+                        
+                        <div id="feedback-text-area" style="max-width: 600px; margin: 0 auto;">
+                            <textarea id="feedback-comment" rows="4" placeholder="Any additional comments or suggestions?" style="margin-bottom: 1.5rem;"></textarea>
+                            <button type="button" class="btn-primary" onclick="submitFinalFeedback()">Submit & Return to Home</button>
+                        </div>
+                        
+                        <div id="feedback-thanks" style="display: none; color: var(--accent-pink); font-weight: bold; font-size: 1.2rem; margin-top: 2rem;">Thank you! Redirecting you home...</div>
+                    </div>
+                </section>
+
+                <!-- Footer Navigation -->
+                <div class="form-footer-nav" id="footer-nav">
+                    <button type="button" class="btn-secondary" id="btn-prev" onclick="navigateStep(-1)" disabled>← Back</button>
+                    <button type="button" class="btn-primary" id="btn-next" onclick="navigateStep(1)">Next Step →</button>
+                    <button type="button" class="btn-primary" id="btn-submit" onclick="submitDashboardForm()" style="display: none;">Generate SLA</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="sla-onboarding.js"></script>
+</body>
+</html>

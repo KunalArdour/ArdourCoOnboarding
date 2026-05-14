@@ -1,0 +1,785 @@
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Pacifico&display=swap');
+
+:root {
+    --bg-primary: #FFF8F0; /* From Brand Identity page */
+    --bg-secondary: #FFFFFF;
+    --accent-pink: #FF007F; /* Main Ardour Pink */
+    --accent-lime: #E8F768; /* From checkered pattern */
+    --accent-lavender: #DCA6FA; /* From checkered pattern */
+    --text-main: #24211F; /* Dark Gray Brown */
+    --text-dim: #51030C; /* Dark Red from palette */
+    --border-color: #BD9476; /* Gray Orange */
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Clean body font */
+}
+
+body {
+    background-color: var(--bg-primary);
+    background-image: url('doodle_bg.png');
+    background-size: 400px 400px; /* Tile the pattern */
+    background-repeat: repeat;
+    background-blend-mode: multiply;
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1 {
+    font-family: 'Aboreto', cursive;
+    font-weight: 400;
+}
+
+h2, h3 {
+    font-family: 'Aboreto', cursive;
+    font-weight: 600;
+}
+
+.accent-text {
+    font-family: 'Pacifico', cursive;
+    color: var(--accent-pink);
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 0px white;
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 8rem 2rem;
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 5.5rem;
+    line-height: 1;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+    font-family: 'Aboreto', cursive;
+}
+
+.hero-subtitle {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--text-dim);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.shake {
+    display: inline-block;
+    color: var(--accent-pink);
+    transition: 0.3s;
+    cursor: default;
+}
+
+.shake:hover {
+    animation: shakeEffect 0.5s ease-in-out infinite;
+}
+
+@keyframes shakeEffect {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* Portfolio Main Container */
+.portfolio-container-main {
+    width: 100%;
+    height: 850px;
+    margin: 4rem 0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+/* Contact Footer */
+.contact-footer-main {
+    padding: 6rem 2rem;
+    background: white;
+    border-radius: 20px;
+    margin-top: 4rem;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    text-align: center;
+}
+
+.contact-card h4 {
+    font-family: 'Aboreto', cursive;
+    color: var(--accent-pink);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+}
+
+.contact-card p {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--text-main);
+}
+
+/* Layout */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Progress Bar */
+.progress-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    position: relative;
+    padding: 0 1rem;
+}
+
+.progress-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.progress-step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-weight: 600;
+    transition: var(--transition-slow);
+    color: var(--text-dim);
+    font-family: 'EB Garamond', serif;
+}
+
+.progress-step.active {
+    border-color: var(--accent-pink);
+    color: var(--accent-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 132, 0.2);
+}
+
+.progress-step.completed {
+    background: var(--accent-pink);
+    border-color: var(--accent-pink);
+    color: white;
+}
+
+/* Sections */
+.step-section {
+    display: none;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.step-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards & Layout */
+.elegant-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px; 
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Recreating the PDF's checkered pattern for card headers */
+.checkered-header {
+    background-color: var(--accent-lime);
+    background-image: 
+        linear-gradient(45deg, var(--accent-lavender) 25%, transparent 25%, transparent 75%, var(--accent-lavender) 75%, var(--accent-lavender)),
+        linear-gradient(45deg, var(--accent-lavender) 25%, transparent 25%, transparent 75%, var(--accent-lavender) 75%, var(--accent-lavender));
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    padding: 2rem;
+    margin: -3rem -3rem 2rem -3rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.checkered-header h2 {
+    background: var(--accent-lime);
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 12px;
+    color: var(--accent-lavender);
+    font-weight: bold;
+    font-size: 2.5rem;
+    border: 2px solid var(--accent-lavender);
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    transition: 0.3s;
+    font-family: 'EB Garamond', serif;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-pink);
+    background: var(--bg-primary);
+}
+
+/* Service Tags UI */
+.service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.service-tag {
+    cursor: pointer;
+}
+
+.service-tag input[type="checkbox"] {
+    display: none;
+}
+
+.service-tag span {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: var(--transition-slow);
+    font-family: 'EB Garamond', serif;
+    font-weight: 500;
+}
+
+.service-tag input[type="checkbox"]:checked + span {
+    background: var(--accent-pink);
+    color: white;
+    border-color: var(--accent-pink);
+    box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2);
+}
+
+.service-tag:hover span {
+    border-color: var(--accent-pink);
+    transform: translateY(-2px);
+}
+
+/* Portfolio Grid */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.portfolio-item {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-slow);
+}
+
+.portfolio-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.portfolio-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.portfolio-info {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    z-index: 2;
+    color: white;
+}
+
+.portfolio-info h3 {
+    font-family: 'Aboreto', cursive;
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--accent-pink);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: 'Aboreto', cursive;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover {
+    background: var(--accent-lavender);
+    color: var(--text-main);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(220, 166, 250, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-secondary);
+    border-color: var(--text-main);
+    color: var(--text-main);
+    box-shadow: none;
+}
+
+/* Signature Pad */
+#signature-pad {
+    width: 100%;
+    height: 200px;
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    border-radius: 0;
+    cursor: crosshair;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .app-container { padding: 1rem; }
+    .elegant-card { padding: 1.5rem; }
+}
+
+/* =========================================
+   SLA ONBOARDING DASHBOARD STYLES
+   ========================================= */
+
+.dashboard-body {
+    background-color: #FAFAFA; /* Cleaner minimal background */
+    background-image: none;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dashboard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dash-logo {
+    height: 40px;
+}
+
+.dash-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.save-status {
+    font-size: 0.85rem;
+    color: #888;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-small {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-small:hover {
+    background: #f5f5f5;
+}
+
+.dashboard-container {
+    display: flex;
+    flex: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 3rem;
+    padding: 3rem;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+
+.progress-widget {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.progress-widget h3 {
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.progress-bar-bg {
+    height: 6px;
+    background: #EEE;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent-pink);
+    width: 0%;
+    transition: width 0.5s ease-out;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.sidebar-nav {
+    list-style: none;
+}
+
+.nav-item {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #666;
+    transition: 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+    background: white;
+    color: var(--text-main);
+}
+
+.nav-item.active {
+    background: white;
+    color: var(--accent-pink);
+    font-weight: 600;
+    border-left-color: var(--accent-pink);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.nav-item.completed {
+    color: var(--text-main);
+}
+
+.nav-item.completed::after {
+    content: ' ✓';
+    color: var(--accent-lime);
+}
+
+.review-step {
+    margin-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 1.2rem;
+}
+
+/* Main Form Area */
+.dashboard-main {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    padding: 3rem;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section {
+    display: none;
+    animation: slideUp 0.4s ease-out forwards;
+    flex: 1;
+}
+
+.form-section.active {
+    display: block;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #EEE;
+}
+
+.section-header h2 {
+    font-family: 'Aboreto', cursive;
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--text-dim);
+    font-family: 'EB Garamond', serif;
+    font-size: 1.1rem;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Specific Dashboard Form Overrides */
+.dashboard-main label {
+    font-family: 'Inter', sans-serif;
+    text-transform: none;
+    letter-spacing: normal;
+    color: #444;
+}
+
+.dashboard-main input, .dashboard-main textarea, .dashboard-main select {
+    font-family: 'Inter', sans-serif;
+    border-radius: 6px;
+    border: 1px solid #DDD;
+    background: #FAFAFA;
+    padding: 0.8rem 1rem;
+}
+
+.dashboard-main input:focus, .dashboard-main textarea:focus, .dashboard-main select:focus {
+    border-color: var(--accent-pink);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,0,127,0.1);
+}
+
+/* Upload Zone */
+.upload-zone {
+    border: 2px dashed #CCC;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #FAFAFA;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent-pink);
+    background: #FFF0F5;
+}
+
+.upload-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.file-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.file-card {
+    background: white;
+    border: 1px solid #EEE;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.85rem;
+    position: relative;
+}
+
+/* Toggle Group for Yes/No */
+.toggle-group select {
+    cursor: pointer;
+}
+
+/* Consent Checkboxes */
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    text-transform: none;
+    font-weight: normal;
+}
+
+.checkbox-label input {
+    margin-top: 0.2rem;
+    width: auto;
+}
+
+/* Signature */
+#dashboard-signature {
+    background: #FAFAFA;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+    cursor: crosshair;
+}
+
+.btn-clear-sig {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+}
+
+/* Review Box */
+.review-box {
+    background: #FAFAFA;
+    border: 1px solid #EEE;
+    border-radius: 12px;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+}
+
+.review-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #EEE;
+}
+
+.review-item strong {
+    display: block;
+    color: #777;
+    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* Footer Nav */
+.form-footer-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #EEE;
+}
+
+.form-footer-nav .btn-primary {
+    border-radius: 6px;
+    padding: 0.8rem 2rem;
+}
+
+.form-footer-nav .btn-secondary {
+    border-radius: 6px;
+    padding: 0.8rem 2rem;
+}
+
+@media (max-width: 992px) {
+    .dashboard-container { flex-direction: column; padding: 1.5rem; }
+    .dashboard-sidebar { width: 100%; height: auto; position: static; }
+    .sidebar-nav { display: flex; overflow-x: auto; white-space: nowrap; padding-bottom: 1rem; }
+    .nav-item { border-left: none; border-bottom: 3px solid transparent; }
+    .nav-item.active { border-left-color: transparent; border-bottom-color: var(--accent-pink); }
+    .form-grid-2 { grid-template-columns: 1fr; }
+}
