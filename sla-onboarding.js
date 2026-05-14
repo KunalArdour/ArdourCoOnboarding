@@ -18,10 +18,19 @@ function initDashboard() {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
             const targetStep = parseInt(e.target.getAttribute('data-step'));
-            if(validateStep(currentStep) || targetStep < currentStep) {
+            if(targetStep < currentStep) {
                 navigateStep(targetStep - currentStep, targetStep);
-            } else {
-                alert("Please fill required fields before proceeding.");
+            } else if (targetStep > currentStep) {
+                // If skipping steps forward, we must validate each step in between
+                let canProceed = true;
+                for(let s = currentStep; s < targetStep; s++) {
+                    if(!validateStep(s)) {
+                        canProceed = false;
+                        showNotification(`Please complete step ${s} before moving to step ${targetStep}.`, 'error');
+                        break;
+                    }
+                }
+                if(canProceed) navigateStep(targetStep - currentStep, targetStep);
             }
         });
     });
@@ -46,7 +55,7 @@ function initDashboard() {
 
 function navigateStep(direction, target = null) {
     if (direction > 0 && !validateStep(currentStep)) {
-        alert("Please fill all required fields before proceeding.");
+        showNotification("Please fill all required fields before proceeding.", "error");
         return;
     }
 
@@ -90,8 +99,74 @@ function navigateStep(direction, target = null) {
 }
 
 function validateStep(step) {
-    // Temporarily returning true to allow easy testing of the flow without filling all fields
-    return true;
+    const section = document.getElementById(`section-${step}`);
+    if (!section) return true;
+
+    const requiredFields = section.querySelectorAll('[required]');
+    let isValid = true;
+    let firstInvalid = null;
+
+    requiredFields.forEach(field => {
+        if (field.type === 'checkbox') {
+            if (!field.checked) {
+                isValid = false;
+                field.parentElement.style.color = 'red';
+                if (!firstInvalid) firstInvalid = field;
+            } else {
+                field.parentElement.style.color = '';
+            }
+        } else {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.style.borderColor = 'red';
+                if (!firstInvalid) firstInvalid = field;
+            } else {
+                field.style.borderColor = '';
+            }
+        }
+    });
+
+    // Special validation for signature on step 9
+    if (step === 9) {
+        const fileInput = document.getElementById('signature-upload');
+        const hasUpload = fileInput && fileInput.files.length > 0;
+        
+        // Simple check for drawing - check if canvas is blank (not perfect but works for UX)
+        const isCanvasBlank = sigCanvas.toDataURL() === document.createElement('canvas').toDataURL();
+        
+        if (!hasUpload && isCanvasBlank) {
+            isValid = false;
+            showNotification("Please provide a signature (draw or upload).", "error");
+        }
+    }
+
+    if (!isValid && firstInvalid) {
+        firstInvalid.focus();
+    }
+
+    return isValid;
+}
+
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    let icon = '🔔';
+    if(type === 'error') icon = '❌';
+    if(type === 'success') icon = '✅';
+    
+    notification.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    container.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Remove after 4s
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 400);
+    }, 4000);
 }
 
 function updateProgress() {
@@ -187,6 +262,33 @@ function setupSignaturePad() {
     sigCanvas.addEventListener('mousemove', draw);
     sigCanvas.addEventListener('mouseup', () => { isDrawing = false; sigCtx.beginPath(); });
     sigCanvas.addEventListener('mouseout', () => { isDrawing = false; sigCtx.beginPath(); });
+
+    // Touch support for mobile
+    sigCanvas.addEventListener('touchstart', (e) => {
+        isDrawing = true;
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousedown", {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        sigCanvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+    }, { passive: false });
+
+    sigCanvas.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousemove", {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        sigCanvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+    }, { passive: false });
+
+    sigCanvas.addEventListener('touchend', (e) => {
+        const mouseEvent = new MouseEvent("mouseup", {});
+        sigCanvas.dispatchEvent(mouseEvent);
+    }, { passive: false });
 }
 
 function draw(e) {
@@ -240,7 +342,6 @@ function populateReview() {
 
 function submitDashboardForm() {
     if(!validateStep(9)) {
-        alert("Please confirm the terms and sign before generating the SLA.");
         return;
     }
 

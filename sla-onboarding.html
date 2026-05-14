@@ -14,13 +14,16 @@
     <nav class="dashboard-nav">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <img src="logo.png" alt="The Ardour & Co." class="dash-logo">
-            <span style="font-family: 'Aboreto', cursive; font-size: 1.5rem; color: var(--text-main); font-weight: bold;">THE ARDOUR & CO.</span>
+            <span class="nav-brand-text">THE ARDOUR & CO.</span>
         </div>
         <div class="dash-nav-actions">
             <span class="save-status" id="save-status">Auto-saved just now</span>
-            <button class="btn-secondary btn-small" onclick="saveDraft()">Save & Continue Later</button>
+            <button class="btn-secondary btn-small" onclick="saveDraft()">Save Draft</button>
         </div>
     </nav>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
 
     <div class="dashboard-container">
         <!-- Sidebar Progress -->
@@ -481,7 +484,7 @@
                 <!-- Footer Navigation -->
                 <div class="form-footer-nav" id="footer-nav">
                     <button type="button" class="btn-secondary" id="btn-prev" onclick="navigateStep(-1)" disabled>← Back</button>
-                    <button type="button" class="btn-primary" id="btn-next" onclick="navigateStep(1)">Next Step →</button>
+                    <button type="button" class="btn-primary" id="btn-next" onclick="navigateStep(1)">Save & Continue →</button>
                     <button type="button" class="btn-primary" id="btn-submit" onclick="submitDashboardForm()" style="display: none;">Generate SLA</button>
                 </div>
             </form>

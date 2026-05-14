@@ -417,6 +417,11 @@ input:focus, textarea:focus, select:focus {
 @media (max-width: 768px) {
     .app-container { padding: 1rem; }
     .elegant-card { padding: 1.5rem; }
+    .hero-section { padding: 4rem 1rem; }
+    .hero-title { font-size: 2.8rem; }
+    .hero-subtitle { font-size: 1.2rem; }
+    .accent-text { font-size: 1.8rem; }
+    .portfolio-container-main { height: 500px; }
 }
 
 /* =========================================
@@ -452,6 +457,59 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     align-items: center;
     gap: 1.5rem;
+}
+
+.nav-brand-text {
+    font-family: 'Aboreto', cursive; 
+    font-size: 1.5rem; 
+    color: var(--text-main); 
+    font-weight: bold;
+}
+
+/* Notification Toast */
+.notification-container {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.notification {
+    background: #333;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: auto;
+    border-left: 5px solid var(--accent-pink);
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.error {
+    background: #FFF0F1;
+    color: #D32F2F;
+    border-left-color: #D32F2F;
+}
+
+.notification.success {
+    background: #F1FFF4;
+    color: #2E7D32;
+    border-left-color: #2E7D32;
 }
 
 .save-status {
@@ -776,10 +834,82 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 992px) {
-    .dashboard-container { flex-direction: column; padding: 1.5rem; }
-    .dashboard-sidebar { width: 100%; height: auto; position: static; }
-    .sidebar-nav { display: flex; overflow-x: auto; white-space: nowrap; padding-bottom: 1rem; }
-    .nav-item { border-left: none; border-bottom: 3px solid transparent; }
-    .nav-item.active { border-left-color: transparent; border-bottom-color: var(--accent-pink); }
-    .form-grid-2 { grid-template-columns: 1fr; }
+    .dashboard-nav { padding: 1rem 1.5rem; }
+    .nav-brand-text { font-size: 1rem; }
+    .dash-nav-actions .save-status { display: none; }
+    
+    .dashboard-container { flex-direction: column; padding: 1rem; gap: 1.5rem; }
+    
+    .dashboard-sidebar { 
+        width: 100%; 
+        height: auto; 
+        position: sticky; 
+        top: 65px; 
+        background: #FAFAFA; 
+        z-index: 90;
+        margin-bottom: 0;
+        padding-top: 0.5rem;
+    }
+    
+    .progress-widget { margin-bottom: 1rem; padding: 1rem; }
+    
+    .sidebar-nav { 
+        display: flex; 
+        overflow-x: auto; 
+        white-space: nowrap; 
+        padding-bottom: 0.8rem;
+        gap: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-item { 
+        padding: 0.5rem 1rem; 
+        margin-bottom: 0; 
+        border-left: none; 
+        border-bottom: 3px solid transparent;
+        background: white;
+        border: 1px solid #EEE;
+        flex-shrink: 0;
+    }
+    
+    .nav-item.active { 
+        border-left-color: transparent; 
+        border-bottom-color: var(--accent-pink); 
+        background: white;
+    }
+    
+    .dashboard-main { padding: 1.5rem; border-radius: 12px; }
+    .section-header h2 { font-size: 1.6rem; }
+    .form-grid-2 { grid-template-columns: 1fr; gap: 1rem; }
+    
+    .form-footer-nav { 
+        position: sticky;
+        bottom: 0;
+        background: white;
+        margin: 2rem -1.5rem -1.5rem -1.5rem;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        z-index: 80;
+    }
+
+    .notification-container {
+        top: auto;
+        bottom: 80px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .notification {
+        transform: translateY(150%);
+    }
+
+    .notification.show {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-brand-text { display: none; }
+    .dash-logo { height: 30px; }
+    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
 }

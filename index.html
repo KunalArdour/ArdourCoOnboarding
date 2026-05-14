@@ -6,6 +6,8 @@
     <title>The Ardour & Co. | Onboarding</title>
     <meta name="description" content="Premium onboarding for our marketing and advertising partners.">
     <link rel="stylesheet" href="style.css">
+    <!-- PDF.js for Mobile Support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 </head>
 <body>
     <!-- HEADER -->
@@ -31,9 +33,16 @@
                     <h2>Our Creative Portfolio</h2>
                 </div>
                 
-                <!-- Embedded PDF Portfolio (Clean View) -->
-                <div class="portfolio-container-main">
-                    <iframe src="The Ardour & Co. Portfolio.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" width="100%" height="100%" style="border: none; overflow: hidden;" scrolling="no"></iframe>
+                <!-- Embedded PDF Portfolio -->
+                <div class="portfolio-container-main" id="portfolio-container">
+                    <!-- This iframe will be used on Desktop -->
+                    <iframe id="pdf-iframe" src="The Ardour & Co. Portfolio.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" width="100%" height="100%" style="border: none; overflow: hidden;" scrolling="no"></iframe>
+                    
+                    <!-- This canvas will be used on Mobile for PDF.js rendering -->
+                    <div id="pdf-mobile-viewer" style="display: none; width: 100%; height: 100%; overflow-y: auto; background: white;">
+                        <canvas id="pdf-canvas" style="width: 100%; height: auto; display: block;"></canvas>
+                        <div id="pdf-loader" style="padding: 2rem; text-align: center; font-family: 'EB Garamond', serif;">Loading Portfolio...</div>
+                    </div>
                 </div>
 
                 <!-- CONTACT & ADDRESS FOOTER -->
@@ -63,5 +72,49 @@
 
     <!-- script.js is kept for the background effects or any top-level logic if needed -->
     <script src="script.js"></script>
+    <script>
+        // PDF.js Mobile Rendering Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                const url = 'The Ardour & Co. Portfolio.pdf';
+                const pdfjsLib = window['pdfjs-dist/build/pdf'];
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+                const iframe = document.getElementById('pdf-iframe');
+                const mobileViewer = document.getElementById('pdf-mobile-viewer');
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+                const loader = document.getElementById('pdf-loader');
+
+                // Toggle visibility
+                iframe.style.display = 'none';
+                mobileViewer.style.display = 'block';
+
+                // Load PDF
+                pdfjsLib.getDocument(url).promise.then(pdf => {
+                    // We render the first page for the preview
+                    pdf.getPage(1).then(page => {
+                        const viewport = page.getViewport({ scale: 2 }); // High scale for crispness
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        const renderContext = {
+                            canvasContext: ctx,
+                            viewport: viewport
+                        };
+
+                        page.render(renderContext).promise.then(() => {
+                            loader.style.display = 'none';
+                        });
+                    });
+                }).catch(err => {
+                    console.error('PDF.js Error:', err);
+                    loader.innerHTML = 'View Portfolio: <br><br> <a href="' + url + '" target="_blank" class="btn-primary" style="display:inline-block; text-decoration:none;">Open PDF</a>';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
