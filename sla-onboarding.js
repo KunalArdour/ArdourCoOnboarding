@@ -355,6 +355,11 @@ function submitDashboardForm() {
         return;
     }
 
+    const submitBtn = document.getElementById('btn-submit');
+    const originalBtnText = submitBtn.innerText;
+    submitBtn.innerText = 'Processing...';
+    submitBtn.disabled = true;
+
     const form = document.getElementById('sla-form');
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -370,18 +375,20 @@ function submitDashboardForm() {
     if (fileInput && fileInput.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            data.signature_uploaded = e.target.result;
-            finishSubmit(data);
+            data.signature_data = e.target.result;
+            data.signature_type = 'upload';
+            finishSubmit(data, submitBtn, originalBtnText);
         };
         reader.readAsDataURL(fileInput.files[0]);
     } else {
         // Use canvas
-        data.signature_drawn = sigCanvas.toDataURL();
-        finishSubmit(data);
+        data.signature_data = sigCanvas.toDataURL();
+        data.signature_type = 'drawn';
+        finishSubmit(data, submitBtn, originalBtnText);
     }
 }
 
-async function finishSubmit(data) {
+async function finishSubmit(data, submitBtn, originalBtnText) {
     // Generate JSON Output for API/CRM (Keep it aside internally)
     const jsonOutput = JSON.stringify(data, null, 4);
     console.log("=== SECURE SLA DATA GENERATED ===");
@@ -389,6 +396,8 @@ async function finishSubmit(data) {
     
     // SAVE TO SUPABASE
     try {
+        showNotification("Saving your details...", "info");
+        
         const { error } = await supabaseClient
             .from('onboarding_leads')
             .insert([
@@ -405,30 +414,44 @@ async function finishSubmit(data) {
                     monthly_budget: data.monthly_budget,
                     start_date: data.start_date || null,
                     delivery_timeline: data.delivery_timeline,
-                    signature_drawn: data.signature_drawn,
+                    // Send signature to both potential column names to be safe
+                    signature_drawn: data.signature_data,
                     full_submission_json: data 
                 }
             ]);
 
-        if (error) throw error;
+        if (error) {
+            console.error("Supabase Insert Error Object:", error);
+            throw new Error(error.message || "Failed to save to database");
+        }
+
         console.log("Data successfully saved to Supabase table!");
+        showNotification("Details saved successfully!", "success");
+
+        // Hide form, show success
+        document.getElementById('section-10').classList.remove('active');
+        document.getElementById('footer-nav').style.display = 'none';
+        document.querySelector('.dashboard-sidebar').style.display = 'none';
+        document.querySelector('.dashboard-main').style.padding = '0';
+        document.querySelector('.dashboard-main').style.border = 'none';
+        document.querySelector('.dashboard-main').style.boxShadow = 'none';
+        
+        const successScreen = document.getElementById('success-screen');
+        successScreen.classList.add('active');
+        
+        // Clear draft
+        localStorage.removeItem('ardour_sla_draft');
+
     } catch (err) {
-        console.error("Error saving to Supabase:", err.message);
+        console.error("Final Submission Error:", err);
+        showNotification(`Error: ${err.message}. Please check console for details.`, 'error');
+        
+        // Reset button
+        if(submitBtn) {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        }
     }
-    
-    // Hide form, show success
-    document.getElementById('section-10').classList.remove('active');
-    document.getElementById('footer-nav').style.display = 'none';
-    document.querySelector('.dashboard-sidebar').style.display = 'none';
-    document.querySelector('.dashboard-main').style.padding = '0';
-    document.querySelector('.dashboard-main').style.border = 'none';
-    document.querySelector('.dashboard-main').style.boxShadow = 'none';
-    
-    const successScreen = document.getElementById('success-screen');
-    successScreen.classList.add('active');
-    
-    // Clear draft
-    localStorage.removeItem('ardour_sla_draft');
 }
 
 /* Save & Draft Logic */
