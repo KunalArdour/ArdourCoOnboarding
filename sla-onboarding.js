@@ -1,7 +1,7 @@
 // Supabase Configuration
-const SUBAPASE_URL = 'https://jlsnrzcsumdhocterfbc.supabase.co';
+const SUPABASE_URL = 'https://jlsnrzcsumdhocterfbc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsc25yemNzdW1kaG9jdGVyZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NjA2MDAsImV4cCI6MjA5NDMzNjYwMH0.qC6w8R3ZgY__93QA_jjh75RcLfwzA1CaLQXYZZzP_ZA';
-const supabase = supabase.createClient(SUBAPASE_URL, SUPABASE_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
@@ -11,6 +11,12 @@ const totalSteps = 10;
 let currentStep = 1;
 
 function initDashboard() {
+    // Setup Signature Pad
+    setupSignaturePad();
+
+    // Setup Drag & Drop
+    setupDragAndDrop();
+
     // Check for saved draft
     loadDraft();
     
@@ -35,12 +41,6 @@ function initDashboard() {
         });
     });
 
-    // Setup Signature Pad
-    setupSignaturePad();
-
-    // Setup Drag & Drop
-    setupDragAndDrop();
-
     // Auto-save interval
     setInterval(saveDraft, 30000); // every 30s
     
@@ -54,7 +54,10 @@ function initDashboard() {
 }
 
 function navigateStep(direction, target = null) {
+    console.log(`Navigating from step ${currentStep} in direction ${direction}. Target: ${target}`);
+    
     if (direction > 0 && !validateStep(currentStep)) {
+        console.warn(`Validation failed for step ${currentStep}. Cannot proceed.`);
         showNotification("Please fill all required fields before proceeding.", "error");
         return;
     }
@@ -131,8 +134,14 @@ function validateStep(step) {
         const fileInput = document.getElementById('signature-upload');
         const hasUpload = fileInput && fileInput.files.length > 0;
         
-        // Simple check for drawing - check if canvas is blank (not perfect but works for UX)
-        const isCanvasBlank = sigCanvas.toDataURL() === document.createElement('canvas').toDataURL();
+        // Check if canvas is blank
+        let isCanvasBlank = true;
+        if (sigCanvas) {
+            const blank = document.createElement('canvas');
+            blank.width = sigCanvas.width;
+            blank.height = sigCanvas.height;
+            isCanvasBlank = sigCanvas.toDataURL() === blank.toDataURL();
+        }
         
         if (!hasUpload && isCanvasBlank) {
             isValid = false;
@@ -141,6 +150,7 @@ function validateStep(step) {
     }
 
     if (!isValid && firstInvalid) {
+        console.log(`Validation failed for field:`, firstInvalid);
         firstInvalid.focus();
     }
 
@@ -379,7 +389,7 @@ async function finishSubmit(data) {
     
     // SAVE TO SUPABASE
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('onboarding_leads')
             .insert([
                 { 
